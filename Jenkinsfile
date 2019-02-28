@@ -10,6 +10,9 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10'))
         timestamps()
     }
+    environment {
+      PATH="/var/lib/jenkins/miniconda3/bin:$PATH"
+    }
     stages {
         stage ("Code pull"){
             steps{
@@ -18,37 +21,28 @@ pipeline {
         }
         stage('Build environment') {
             steps {
-                sh '''pip install -r requirements.txt'''
+                sh '''conda create --yes -n ${BUILD_TAG} python
+                      source activate ${BUILD_TAG} 
+                      pip install -r requirements.txt
+                    '''
             }
         }
         stage('Test environment') {
             steps {
-                echo 'Testing'
-                sh 'python -m pytest -v tests/test_generator.py'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying'
+                sh '''source activate ${BUILD_TAG} 
+                      pip list
+                      which pip
+                      which python
+                    '''
             }
         }
     }
     post {
         always {
-            echo 'This will always run'
-        }
-        success {
-            echo 'This will run only if successful'
+            sh 'conda remove --yes -n ${BUILD_TAG} --all'
         }
         failure {
-            echo 'This will run only if failed'
-        }
-        unstable {
-            echo 'This will run only if the run was marked as unstable'
-        }
-        changed {
-            echo 'This will run only if the state of the Pipeline has changed'
-            echo 'For example, if the Pipeline was previously failing but is now successful'
+            echo "Send e-mail, when failed"
         }
     }
 }
