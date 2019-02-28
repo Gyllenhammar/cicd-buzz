@@ -1,15 +1,30 @@
 pipeline {
     agent any
 
+    triggers {
+        pollSCM('*/5 * * * 1-5')
+    }
+    options {
+        skipDefaultCheckout(true)
+        // Keep the 10 most recent builds
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        timestamps()
+    }
     stages {
-        stage('Build') {
-            steps {
-                echo 'Building'
+        stage ("Code pull"){
+            steps{
+                checkout scm
             }
         }
-        stage('Test') {
+        stage('Build environment') {
+            steps {
+                sh '''pip install -r requirements.txt'''
+            }
+        }
+        stage('Test environment') {
             steps {
                 echo 'Testing'
+                sh 'python -m pytest -v tests/test_generator.py'
             }
         }
         stage('Deploy') {
