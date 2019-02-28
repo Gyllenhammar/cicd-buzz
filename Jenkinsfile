@@ -27,19 +27,10 @@ pipeline {
                     '''
             }
         }
-        stage('Test environment') {
-            steps {
-                sh '''source activate ${BUILD_TAG} 
-                      pip list
-                      which pip
-                      which python
-                    '''
-            }
-        }
         stage('Unit tests') {
             steps {
                 sh  ''' source activate ${BUILD_TAG}
-                        python -m pytest --verbose --junit-xml test-reports/results.xml
+                        python -m pytest -v tests/test_generator.py --junit-xml test-reports/results.xml
                     '''
             }
             post {
