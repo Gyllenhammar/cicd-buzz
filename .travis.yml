@@ -8,11 +8,5 @@ language: python
 script:
   - python -m pytest -v
 
-deploy:
-  provider: script
-  script: bash .travis/docker_push.sh
-  on:
-    branch: master
-   
 after_success:
   - sh .travis/deploy_dockerhub.sh
