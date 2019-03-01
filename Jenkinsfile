@@ -42,15 +42,8 @@ pipeline {
         }
         stage('Deploy docker') {
             steps {
-                sh  ''' service_port = 5000
-
-                        existing = $(docker ps | grep cicd-buzz | grep -o "^[0-9a-z]*")  
-                        if [ ! -z "$existing" ]; then  
-                            docker stop $existing
-                        fi
-
-                        docker build -t cicd-buzz $WORKSPACE  
-                        docker run -p $service_port:$service_port --rm -it cicd-buzz
+                sh  ''' docker build -t cicd-buzz $WORKSPACE  
+                        docker run -p 5000:5000 --rm -it cicd-buzz
                     '''
             }
         }
