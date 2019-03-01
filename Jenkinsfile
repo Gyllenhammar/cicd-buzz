@@ -42,7 +42,7 @@ pipeline {
         }
         stage('Deploy docker') {
             steps {
-                sh  ''' docker build -t cicd-buzz $WORKSPACE  
+                sh  ''' docker build -t cicd-buzz .
                         docker run -p 5000:5000 --rm -it cicd-buzz
                     '''
             }
