@@ -40,11 +40,14 @@ pipeline {
                 }
             }
         }
-        stage('Deploy docker') {
+        stage('Build docker') {
             steps {
-                sh  ''' docker build -t cicd-buzz .
-                        docker run -p 5000:5000 --rm -it cicd-buzz
-                    '''
+                script {
+                    def customImage = docker.build("my-image:${env.BUILD_ID}")
+                }
+                //sh  ''' docker build -t cicd-buzz .
+                //        docker run -p 5000:5000 --rm -it cicd-buzz
+                //    '''
             }
         }
     }
