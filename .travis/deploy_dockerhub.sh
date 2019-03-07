@@ -6,5 +6,5 @@ else
     TAG="$TRAVIS_BRANCH"
 fi
 echo $TRAVIS_REPO_SLUG:$TAG
-docker build -f Dockerfile -t $TRAVIS_REPO_SLUG:$TAG .
-docker push $TRAVIS_REPO_SLUG
+docker build -f Dockerfile -t "gyllenhammar/cicd-buzz":$TAG .
+docker push "gyllenhammar/cicd-buzz"
